@@ -1,8 +1,8 @@
 <h1 class="text-primary">Vehicles</h1>
 
-<p *ngIf="!vehicles"><em>Loading...</em></p>
+<p *ngIf="!latestVehicleData"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="vehicles">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="latestVehicleData">
   <thead>
     <tr>
       <th>ID</th>
@@ -12,11 +12,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let vehicle of vehicles">
-      <td>{{ vehicle.Id }}</td>
-      <td>{{ vehicle.Data[0].Latitude }}</td>
-      <td>{{ vehicle.Data[0].Longitude }}</td>
-      <td>{{ vehicle.Data[0].Speed }}</td>
+    <tr *ngFor="let data of latestVehicleData">
+      <td>{{ data.VehicleName }}</td>
+      <td>{{ data.Latitude }}</td>
+      <td>{{ data.Longitude }}</td>
+      <td>{{ data.Speed }}</td>
     </tr>
   </tbody>
 </table>
+
+<button ng-click="AddVehicle">Add</button>

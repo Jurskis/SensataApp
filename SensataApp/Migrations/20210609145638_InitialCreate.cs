@@ -11,7 +11,8 @@ namespace SensataApp.Migrations
                 name: "Vehicles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -22,21 +23,22 @@ namespace SensataApp.Migrations
                 name: "Data",
                 columns: table => new
                 {
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getutcdate()"),
+                    VehicleId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Latitude = table.Column<double>(type: "float", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
-                    Speed = table.Column<int>(type: "int", nullable: false),
-                    VehicleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Speed = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Data", x => x.CreateTime);
+                    table.PrimaryKey("PK_Data", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Data_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

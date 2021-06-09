@@ -10,8 +10,8 @@ using SensataApp.Models;
 namespace SensataApp.Migrations
 {
     [DbContext(typeof(VehiclesContext))]
-    [Migration("20210609090514_AddCreated")]
-    partial class AddCreated
+    [Migration("20210609145638_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,12 @@ namespace SensataApp.Migrations
 
             modelBuilder.Entity("SensataApp.Models.Vehicle", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -52,8 +55,8 @@ namespace SensataApp.Migrations
                     b.Property<int>("Speed")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("VehicleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("VehicleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -66,9 +69,7 @@ namespace SensataApp.Migrations
                 {
                     b.HasOne("SensataApp.Models.Vehicle", "Vehicle")
                         .WithMany("Data")
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VehicleId");
 
                     b.Navigation("Vehicle");
                 });
