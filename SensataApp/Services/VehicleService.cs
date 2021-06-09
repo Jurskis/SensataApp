@@ -1,9 +1,7 @@
-﻿using SensataApp.Db.Data;
-using SensataApp.Db.Models;
+﻿using SensataApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SensataApp.Core
 {
@@ -11,17 +9,17 @@ namespace SensataApp.Core
     {
         IEnumerable<Vehicle> GetLatestVehiclesData();
         Vehicle GetVehicle(Guid id);
-        void AddVehicle(List<VehicleData> vehicleData);
+        void AddVehicle(VehicleData data);
         void AddVehicleData(Guid id, VehicleData data);
         public void DeleteVehicle(Vehicle vehicle);
     }
 
     public class VehicleService : IVehicleService
     {
-        private VehicleContext _vehicleContext;
-        public VehicleService(VehicleContext vehicleContext)
+        private VehiclesContext _vehiclesContext;
+        public VehicleService(VehiclesContext VehiclesContext)
         {
-            _vehicleContext = vehicleContext;
+            _vehiclesContext = VehiclesContext;
         }
 
         private List<Vehicle> vehicles = new List<Vehicle>()
@@ -68,7 +66,7 @@ namespace SensataApp.Core
 
         public IEnumerable<Vehicle> GetLatestVehiclesData()
         {
-            return _vehicleContext.Vehicles.ToList();
+            return _vehiclesContext.Vehicles;
         }
 
         public Vehicle GetVehicle(Guid id)
@@ -76,12 +74,32 @@ namespace SensataApp.Core
             return vehicles.Find(vehicle => vehicle.Id == id);
         }
 
-        public void AddVehicle(List<VehicleData> data)
+
+
+
+
+
+        public void AddVehicle(VehicleData data)
         {
-            // Create a new vehicle with a newly generated ID.
-            var vehicle = new Vehicle() { Id = Guid.NewGuid(), Data = data };
-            vehicles.Add(vehicle);
+            // Create and add to the database a new vehicle with a newly generated ID.
+            Vehicle vehicle = new Vehicle() { Id = Guid.NewGuid() };
+            _vehiclesContext.Vehicles.Add(vehicle);
+
+            // Check if the new vehicle has any default starting data and add that too.
+            if (data != null)
+            {
+                data.VehicleId = vehicle.Id;
+                _vehiclesContext.Add(data);
+            }
+
+            _vehiclesContext.SaveChanges();
         }
+
+
+
+
+
+
 
         public void AddVehicleData(Guid id, VehicleData data)
         {

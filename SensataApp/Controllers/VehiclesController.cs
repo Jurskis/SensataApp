@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SensataApp.Core;
-using SensataApp.Db.Models;
+using SensataApp.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -53,11 +51,15 @@ namespace SensataApp.Controllers
                 return NotFound($"Vehicle with id: {id} was not found.");
         }
 
-
+        /**
+         * POST api/<VehiclesController>
+         * Add a vehicle with possible default data.
+         */
         [HttpPost]
-        public void AddVehicle([FromBody] List<VehicleData> data)
+        public ActionResult AddVehicle([FromBody] VehicleData data)
         {
             _vehicleService.AddVehicle(data);
+            return Ok("Received post");
         }
 
 

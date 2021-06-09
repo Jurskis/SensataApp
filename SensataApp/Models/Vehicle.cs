@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace SensataApp.Db.Models
+namespace SensataApp.Models
 {
     public class Vehicle
     {

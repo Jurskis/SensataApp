@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SensataApp.Core;
-using SensataApp.Db.Data;
+using SensataApp.Models;
 
 namespace SensataApp
 {
@@ -26,7 +26,10 @@ namespace SensataApp
 
             services.AddScoped<IVehicleService, VehicleService>();
 
-            services.AddDbContext<VehicleContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VehicleContext")));
+            services.AddDbContext<VehiclesContext>(
+                options => options.UseSqlServer(
+                    Configuration.GetConnectionString("VehiclesContext")
+                ));
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
