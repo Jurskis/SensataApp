@@ -9,11 +9,11 @@ namespace SensataApp.Services
     public interface IVehicleService 
     {
         IEnumerable<Vehicle> GetVehicles();
-        List<LatestVehicleData> GetLatestVehicleData();
-        Vehicle GetVehicle(string id);
+
+        IEnumerable<LatestVehicleData> GetLatestVehicleData();
+        IEnumerable<VehicleDataDTO> GetVehicleData(string id);
         void AddVehicle(VehicleDTO data);
-        void AddVehicleData(string id, VehicleData data);
-        void DeleteVehicle(Vehicle vehicle);
+        string AddVehicleData(string id, VehicleDataDTO data);
     }
 
     public class VehicleService : IVehicleService
@@ -23,19 +23,22 @@ namespace SensataApp.Services
         {
             _vehiclesContext = VehiclesContext;
         }
+
+
+        // For testing
         public IEnumerable<Vehicle> GetVehicles()
         {
             return _vehiclesContext.Vehicles;
         }
 
-        public List<LatestVehicleData> GetLatestVehicleData()
+
+        public IEnumerable<LatestVehicleData> GetLatestVehicleData()
         {
-            //List<VehicleData> vehicleData = new List<VehicleData>();
             List<LatestVehicleData> latestVehicleData = new List<LatestVehicleData>();
             VehicleData vehicleData;
 
             // Iterate over all vehicles and get their latest data inputs.
-            // Map that required data to LatestVehicleData objects.
+            // Map that data to LatestVehicleData objects.
             foreach (Vehicle vehicle in _vehiclesContext.Vehicles)
             {
                 vehicleData = _vehiclesContext.Data
@@ -54,9 +57,18 @@ namespace SensataApp.Services
             return latestVehicleData;
         }
 
-
-        public Vehicle GetVehicle(string id)
+        
+        public IEnumerable<VehicleDataDTO> GetVehicleData(string id)
         {
+            // Check if vehicle with given ID exists.
+            Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
+            if (vehicle != null)
+            {
+                /*List<VehicleDataDTO> vehicleData = new List<VehicleDataDTO>();
+                vehicleData =
+                return _vehiclesContext.Data
+                    .Where(vd => vd.VehicleId == id);*/
+            }
             return null;
         }
 
@@ -72,16 +84,26 @@ namespace SensataApp.Services
         }
 
 
-        public void AddVehicleData(string id, VehicleData data)
+        public string AddVehicleData(string id, VehicleDataDTO data)
         {
-            // Add data to vehicle with the specified ID.
-            
-        }
+            // Check if vehicle with given ID exists.
+            Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
+            if (vehicle != null)
+            {
+                // Map received data to database entity.
+                VehicleData vehicleData = new VehicleData
+                {
+                    VehicleId = id,
+                    Latitude = data.Latitude,
+                    Longitude = data.Longitude,
+                    Speed = data.Speed
+                };
+                _vehiclesContext.Data.Add(vehicleData);
+                _vehiclesContext.SaveChanges();
+                return vehicle.Name;
+            }
 
-
-        public void DeleteVehicle(Vehicle vehicle)
-        {
-            
+            return null;
         }
     }
 }

@@ -25,11 +25,11 @@ namespace SensataApp.Controllers
          * GET api/<VehiclesController>
          * Get all vehicles.
          * 
-         * Žinau jog nesaugu, ši funkcija testavimui.
+         * Žinau kad neturėjau grąžint info tiesiai iš DB, ši funkcija testavimui.
          * 
          */
         [HttpGet]
-        public ActionResult<List<Vehicle>> GetVehicles()
+        public ActionResult<IEnumerable<Vehicle>> GetVehicles()
         {
             var vehicles = _vehicleService.GetVehicles();
             // Check if any vehicles were found.
@@ -39,12 +39,13 @@ namespace SensataApp.Controllers
                 return NotFound("No vehicle data found.");
         }
 
+
         /**
          * GET api/<VehiclesController>/latest
          * Get the latest data of all vehicles.
          */
         [HttpGet("latest")]
-        public ActionResult<List<object>> GetLatestVehicleData()
+        public ActionResult<IEnumerable<LatestVehicleData>> GetLatestVehicleData()
         {
             var latestVehicleData = _vehicleService.GetLatestVehicleData();
             // Check if any vehicles were found.
@@ -60,14 +61,12 @@ namespace SensataApp.Controllers
          * Get all data from the specified vehicle.
          */
         [HttpGet("{id}")]
-        public ActionResult<Vehicle> GetVehicleData(string id)
+        public ActionResult<IEnumerable<VehicleDataDTO>> GetVehicleData(string id)
         {
-            var vehicle = _vehicleService.GetVehicle(id);
-            // Check if vehicle with the given ID was found.
-            if (vehicle != null)
-                return Ok(vehicle);
-            else
-                return NotFound($"Vehicle with id: {id} was not found.");
+            var vehicleData = _vehicleService.GetVehicleData(id);
+            if (vehicleData != null)
+                return Ok(vehicleData);
+            return NotFound($"Vehicle with ID: {id} was not found.");
         }
 
         /**
@@ -75,32 +74,24 @@ namespace SensataApp.Controllers
          * Add a vehicle.
          */
         [HttpPost]
-        public void AddVehicle([FromBody] VehicleDTO vehicle)
+        public ActionResult AddVehicle([FromBody] VehicleDTO vehicle)
         {
             _vehicleService.AddVehicle(vehicle);
+            return Ok($"Vehicle added. {vehicle}");
         }
 
 
-        [HttpPut("{id}")]
-        public void AddVehicleData(string id, [FromBody] VehicleData data)
+        /**
+         * POST api/<VehiclesController>/id
+         * Add an instance of vehicle data input.
+         */
+        [HttpPost("{id}")]
+        public ActionResult AddVehicleData(string id, [FromBody] VehicleDataDTO data)
         {
-            _vehicleService.AddVehicleData(id, data);
-        }
-
-
-        // DELETE api/<VehiclesController>/5
-        [HttpDelete("{id}")]
-        public IActionResult DeleteVehicle(string id)
-        {
-            var vehicle = _vehicleService.GetVehicle(id);
-            // Check if vehicle with the given ID was found.
-            if (vehicle != null)
-            {
-                _vehicleService.DeleteVehicle(vehicle);
-                return Ok();
-            } 
-
-            return NotFound($"Vehicle with id: {id} was not found.");
+            string name = _vehicleService.AddVehicleData(id, data);
+            if (name != null)
+                return Ok($"Data added to vehicle {name}. {data}");
+            return NotFound($"Vehicle with ID: {id} not found.");
         }
     }
 }
