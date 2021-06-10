@@ -14,7 +14,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let input of latestVehicleInputs">
-      <td><a href="/" class="link-dark">Show All</a></td>
+      <td><a [routerLink]="['/counter']" class="nav-link">Show All</a></td>
       <td>{{ input.vehicleName }}</td>
       <td>{{ input.latitude }}</td>
       <td>{{ input.longitude }}</td>
