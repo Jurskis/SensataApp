@@ -34,7 +34,7 @@ namespace SensataApp.Services
 
         public IEnumerable<LatestVehicleInput> GetLatestVehicleInputs()
         {
-            List<LatestVehicleInput> latestVehicleInputs = new List<LatestVehicleInput>();
+            ICollection<LatestVehicleInput> latestVehicleInputs = new List<LatestVehicleInput>();
             VehicleInput vehicleInput;
 
             // Iterate over all vehicles and get their latest inputs.

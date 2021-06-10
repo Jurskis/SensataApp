@@ -5,7 +5,8 @@
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="latestVehicleInputs">
   <thead>
     <tr>
-      <th>ID</th>
+      <th></th>
+      <th>Name</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Speed</th>
@@ -13,12 +14,12 @@
   </thead>
   <tbody>
     <tr *ngFor="let input of latestVehicleInputs">
-      <td>{{ input.VehicleName }}</td>
-      <td>{{ input.Latitude }}</td>
-      <td>{{ input.Longitude }}</td>
-      <td>{{ input.Speed }}</td>
+      <td><a href="/" class="link-dark">Show All</a></td>
+      <td>{{ input.vehicleName }}</td>
+      <td>{{ input.latitude }}</td>
+      <td>{{ input.longitude }}</td>
+      <td>{{ input.speed }}</td>
     </tr>
   </tbody>
 </table>
-
-<button ng-click="AddVehicle">Add</button>
+<button class="btn btn-primary float-right" (click)="addVehicle()">Add Vehicle</button>

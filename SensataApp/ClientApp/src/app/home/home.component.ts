@@ -6,23 +6,24 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  public latestVehicleInputs: LatestVehicleInput[];
+  latestVehicleInputs: LatestVehicleInput[];
+  names: string[];
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<LatestVehicleInput[]>(baseUrl + 'api/vehicles/latest').subscribe(result => {
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.http.get<LatestVehicleInput[]>(this.baseUrl + 'api/vehicles/latest').subscribe((result) => {
       this.latestVehicleInputs = result;
-    }, error => console.error(error));
+    });
   }
 
-  AddVehicle() {
+  addVehicle() {
     alert("add");
   }
 }
 
 interface LatestVehicleInput {
-  VehicleId: string;
-  VehicleName: string;
-  Latitude: string;
-  Longitute: string;
-  Speed: string;
+  vehicleId: string;
+  vehicleName: string;
+  latitude: string;
+  longitute: string;
+  speed: string;
 }
