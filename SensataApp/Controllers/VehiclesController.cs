@@ -25,7 +25,7 @@ namespace SensataApp.Controllers
          * GET api/<VehiclesController>
          * Get all vehicles.
          * 
-         * Žinau kad neturėjau grąžint info tiesiai iš DB, ši funkcija testavimui.
+         * Ši funkcija testavimui.
          * 
          */
         [HttpGet]
@@ -42,15 +42,15 @@ namespace SensataApp.Controllers
 
         /**
          * GET api/<VehiclesController>/latest
-         * Get the latest data of all vehicles.
+         * Get the latest inputs of all vehicles.
          */
         [HttpGet("latest")]
-        public ActionResult<IEnumerable<LatestVehicleData>> GetLatestVehicleData()
+        public ActionResult<IEnumerable<LatestVehicleInput>> GetLatestVehicleInputs()
         {
-            var latestVehicleData = _vehicleService.GetLatestVehicleData();
+            var latestVehicleInputs = _vehicleService.GetLatestVehicleInputs();
             // Check if any vehicles were found.
-            if (latestVehicleData != null)
-                return Ok(latestVehicleData);
+            if (latestVehicleInputs != null)
+                return Ok(latestVehicleInputs);
             else
                 return NotFound("No vehicle data found.");
         }
@@ -58,14 +58,14 @@ namespace SensataApp.Controllers
 
         /**
          * GET api/<VehiclesController>/{id}
-         * Get all data from the specified vehicle.
+         * Get all inputs from the specified vehicle.
          */
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<VehicleDataDTO>> GetVehicleData(string id)
+        public ActionResult<IEnumerable<VehicleInputDTO>> GetVehicleInputs(string id)
         {
-            var vehicleData = _vehicleService.GetVehicleData(id);
-            if (vehicleData != null)
-                return Ok(vehicleData);
+            var vehicleInputs = _vehicleService.GetVehicleInputs(id);
+            if (vehicleInputs != null)
+                return Ok(vehicleInputs);
             return NotFound($"Vehicle with ID: {id} was not found.");
         }
 
@@ -83,14 +83,14 @@ namespace SensataApp.Controllers
 
         /**
          * POST api/<VehiclesController>/id
-         * Add an instance of vehicle data input.
+         * Add an instance of vehicle input.
          */
         [HttpPost("{id}")]
-        public ActionResult AddVehicleData(string id, [FromBody] VehicleDataDTO data)
+        public ActionResult AddVehicleInput(string id, [FromBody] VehicleInputDTO input)
         {
-            string name = _vehicleService.AddVehicleData(id, data);
+            string name = _vehicleService.AddVehicleInput(id, input);
             if (name != null)
-                return Ok($"Data added to vehicle {name}. {data}");
+                return Ok($"Data added to vehicle {name}. {input}");
             return NotFound($"Vehicle with ID: {id} not found.");
         }
     }

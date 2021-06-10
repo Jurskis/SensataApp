@@ -1,8 +1,7 @@
-﻿namespace SensataApp
+﻿namespace SensataApp.DTOs
 {
-    public class LatestVehicleData
+    public class VehicleInputDTO
     {
-        public string VehicleName { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public int Speed { get; set; }

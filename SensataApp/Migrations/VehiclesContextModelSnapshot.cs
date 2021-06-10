@@ -33,7 +33,7 @@ namespace SensataApp.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("SensataApp.Models.VehicleData", b =>
+            modelBuilder.Entity("SensataApp.Models.VehicleInput", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,13 +60,13 @@ namespace SensataApp.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Data");
+                    b.ToTable("VehicleInputs");
                 });
 
-            modelBuilder.Entity("SensataApp.Models.VehicleData", b =>
+            modelBuilder.Entity("SensataApp.Models.VehicleInput", b =>
                 {
                     b.HasOne("SensataApp.Models.Vehicle", "Vehicle")
-                        .WithMany("Data")
+                        .WithMany("Inputs")
                         .HasForeignKey("VehicleId");
 
                     b.Navigation("Vehicle");
@@ -74,7 +74,7 @@ namespace SensataApp.Migrations
 
             modelBuilder.Entity("SensataApp.Models.Vehicle", b =>
                 {
-                    b.Navigation("Data");
+                    b.Navigation("Inputs");
                 });
 #pragma warning restore 612, 618
         }

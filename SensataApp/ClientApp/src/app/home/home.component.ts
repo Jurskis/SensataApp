@@ -6,11 +6,11 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  public latestVehicleData: LatestVehicleData[];
+  public latestVehicleInputs: LatestVehicleInput[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<LatestVehicleData[]>(baseUrl + 'api/vehicles/latest').subscribe(result => {
-      this.latestVehicleData = result;
+    http.get<LatestVehicleInput[]>(baseUrl + 'api/vehicles/latest').subscribe(result => {
+      this.latestVehicleInputs = result;
     }, error => console.error(error));
   }
 
@@ -19,7 +19,8 @@ export class HomeComponent {
   }
 }
 
-interface LatestVehicleData {
+interface LatestVehicleInput {
+  VehicleId: string;
   VehicleName: string;
   Latitude: string;
   Longitute: string;

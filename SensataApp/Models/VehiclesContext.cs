@@ -8,16 +8,16 @@ namespace SensataApp.Models
 
         public DbSet<Vehicle> Vehicles { get; set; }
 
-        public DbSet<VehicleData> Data { get; set; }
+        public DbSet<VehicleInput> VehicleInputs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Vehicle>()
-                .HasMany(v => v.Data)
-                .WithOne(vd => vd.Vehicle);
+                .HasMany(v => v.Inputs)
+                .WithOne(vi => vi.Vehicle);
 
-            modelBuilder.Entity<VehicleData>()
-                .Property(vd => vd.Created)
+            modelBuilder.Entity<VehicleInput>()
+                .Property(vi => vi.Created)
                 .HasDefaultValueSql("getutcdate()");
         }
     }

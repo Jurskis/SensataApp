@@ -20,7 +20,7 @@ namespace SensataApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Data",
+                name: "VehicleInputs",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -32,9 +32,9 @@ namespace SensataApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Data", x => x.Id);
+                    table.PrimaryKey("PK_VehicleInputs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Data_Vehicles_VehicleId",
+                        name: "FK_VehicleInputs_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
                         principalColumn: "Id",
@@ -42,15 +42,15 @@ namespace SensataApp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Data_VehicleId",
-                table: "Data",
+                name: "IX_VehicleInputs_VehicleId",
+                table: "VehicleInputs",
                 column: "VehicleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Data");
+                name: "VehicleInputs");
 
             migrationBuilder.DropTable(
                 name: "Vehicles");

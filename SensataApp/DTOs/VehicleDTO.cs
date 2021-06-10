@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SensataApp.DTOs
+﻿namespace SensataApp.DTOs
 {
     public class VehicleDTO
     {
