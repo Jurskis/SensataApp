@@ -1,16 +1,16 @@
-import { Component, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { AppService } from '../app.service'
+import { VehicleInput } from '../vehicle-input';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  latestVehicleInputs: LatestVehicleInput[];
-  names: string[];
+  latestVehicleInputs: VehicleInput[];
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
-    this.http.get<LatestVehicleInput[]>(this.baseUrl + 'api/vehicles/latest').subscribe((result) => {
+  constructor(appService: AppService) {
+    appService.getLatestVehicleInputs().subscribe((result) => {
       this.latestVehicleInputs = result;
     });
   }
@@ -18,12 +18,4 @@ export class HomeComponent {
   addVehicle() {
     alert("add");
   }
-}
-
-interface LatestVehicleInput {
-  vehicleId: string;
-  vehicleName: string;
-  latitude: string;
-  longitute: string;
-  speed: string;
 }

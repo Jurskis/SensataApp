@@ -34,7 +34,7 @@ namespace SensataApp.Services
 
         public IEnumerable<LatestVehicleInput> GetLatestVehicleInputs()
         {
-            ICollection<LatestVehicleInput> latestVehicleInputs = new List<LatestVehicleInput>();
+            List<LatestVehicleInput> latestVehicleInputs = new List<LatestVehicleInput>();
             VehicleInput vehicleInput;
 
             // Iterate over all vehicles and get their latest inputs.
@@ -76,14 +76,22 @@ namespace SensataApp.Services
         
         public IEnumerable<VehicleInputDTO> GetVehicleInputs(string id)
         {
+            List<VehicleInputDTO> vehicleInputDTOs;
+
             // Check if vehicle with given ID exists.
             Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
             if (vehicle != null)
             {
-                /*List<VehicleInputDTO> vehicleInput = new List<VehicleInputDTO>();
-                vehicleInput =
-                return _vehiclesContext.Data
-                    .Where(vd => vd.VehicleId == id);*/
+                vehicleInputDTOs = _vehiclesContext.VehicleInputs
+                    .Where(vi => vi.VehicleId == id)
+                    .Select(vi => new VehicleInputDTO { Latitude = vi.Latitude, Longitude = vi.Longitude, Speed = vi.Speed })
+                    .DefaultIfEmpty().ToList();
+
+                // If query result was null return an empty list, not a null object.
+                if (vehicleInputDTOs == null)
+                    return new List<VehicleInputDTO>();
+
+                return vehicleInputDTOs;
             }
             return null;
         }
