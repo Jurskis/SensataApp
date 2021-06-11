@@ -2,7 +2,6 @@
 using SensataApp.DTOs;
 using SensataApp.Models;
 using SensataApp.Services;
-using System;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -74,10 +73,10 @@ namespace SensataApp.Controllers
          * Add a vehicle.
          */
         [HttpPost]
-        public ActionResult AddVehicle([FromBody] VehicleDTO vehicle)
+        public ActionResult AddVehicle([FromBody] VehicleDTO vehicleDTO)
         {
-            _vehicleService.AddVehicle(vehicle);
-            return Ok($"Vehicle added. {vehicle}");
+            _vehicleService.AddVehicle(vehicleDTO);
+            return Ok(vehicleDTO);
         }
 
 
@@ -88,9 +87,9 @@ namespace SensataApp.Controllers
         [HttpPost("{id}")]
         public ActionResult AddVehicleInput(string id, [FromBody] VehicleInputDTO input)
         {
-            string name = _vehicleService.AddVehicleInput(id, input);
-            if (name != null)
-                return Ok($"Data added to vehicle {name}. {input}");
+            bool success = _vehicleService.AddVehicleInput(id, input);
+            if (success)
+                return Ok(input);
             return NotFound($"Vehicle with ID: {id} not found.");
         }
     }

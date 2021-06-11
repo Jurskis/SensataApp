@@ -13,7 +13,7 @@ namespace SensataApp.Services
         IEnumerable<LatestVehicleInput> GetLatestVehicleInputs();
         IEnumerable<VehicleInputDTO> GetVehicleInputs(string id);
         void AddVehicle(VehicleDTO vehicleDTO);
-        string AddVehicleInput(string id, VehicleInputDTO input);
+        bool AddVehicleInput(string id, VehicleInputDTO input);
     }
 
     public class VehicleService : IVehicleService
@@ -76,20 +76,23 @@ namespace SensataApp.Services
         
         public IEnumerable<VehicleInputDTO> GetVehicleInputs(string id)
         {
-            List<VehicleInputDTO> vehicleInputDTOs;
+            List<VehicleInputDTO> vehicleInputDTOs = new List<VehicleInputDTO>();
 
             // Check if vehicle with given ID exists.
             Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
             if (vehicle != null)
             {
-                vehicleInputDTOs = _vehiclesContext.VehicleInputs
-                    .Where(vi => vi.VehicleId == id)
-                    .Select(vi => new VehicleInputDTO { Latitude = vi.Latitude, Longitude = vi.Longitude, Speed = vi.Speed })
-                    .DefaultIfEmpty().ToList();
-
-                // If query result was null return an empty list, not a null object.
-                if (vehicleInputDTOs == null)
+                try
+                {
+                    vehicleInputDTOs = _vehiclesContext.VehicleInputs
+                        .Where(vi => vi.VehicleId == id)
+                        .Select(vi => new VehicleInputDTO { Latitude = vi.Latitude, Longitude = vi.Longitude, Speed = vi.Speed })
+                        .DefaultIfEmpty().ToList();
+                }
+                catch
+                {
                     return new List<VehicleInputDTO>();
+                }        
 
                 return vehicleInputDTOs;
             }
@@ -108,7 +111,7 @@ namespace SensataApp.Services
         }
 
 
-        public string AddVehicleInput(string id, VehicleInputDTO input)
+        public bool AddVehicleInput(string id, VehicleInputDTO input)
         {
             // Check if vehicle with given ID exists.
             Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
@@ -124,10 +127,10 @@ namespace SensataApp.Services
                 };
                 _vehiclesContext.VehicleInputs.Add(vehicleInput);
                 _vehiclesContext.SaveChanges();
-                return vehicle.Name;
+                return true;
             }
             
-            return null;
+            return false;
         }
     }
 }

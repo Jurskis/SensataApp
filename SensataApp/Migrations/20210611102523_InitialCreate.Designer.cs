@@ -10,7 +10,7 @@ using SensataApp.Models;
 namespace SensataApp.Migrations
 {
     [DbContext(typeof(VehiclesContext))]
-    [Migration("20210610072135_InitialCreate")]
+    [Migration("20210611102523_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
