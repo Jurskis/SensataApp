@@ -1,5 +1,5 @@
 # SensataApp
-Sensata Vehicle Data App
+
 Postman software: https://www.postman.com/
 
 # Functionality and testing
