@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SensataApp.DTOs;
 using SensataApp.Models;
-using SensataApp.Services;
 using System.Collections.Generic;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SensataApp.Controllers
 {
@@ -12,16 +9,16 @@ namespace SensataApp.Controllers
     [ApiController]
     public class VehiclesController : ControllerBase
     {
-        private readonly IVehicleService _vehicleService;
+        private VehiclesContext _vehiclesContext;
 
-        public VehiclesController(IVehicleService vehicleService)
+        public VehiclesController(VehiclesContext vehiclesContext)
         {
-            _vehicleService = vehicleService;
+            _vehiclesContext = vehiclesContext;
         }
 
 
         /**
-         * GET api/<VehiclesController>
+         * GET api/vehicles
          * Get all vehicles.
          * 
          * Ši funkcija testavimui.
@@ -30,7 +27,7 @@ namespace SensataApp.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Vehicle>> GetVehicles()
         {
-            var vehicles = _vehicleService.GetVehicles();
+            var vehicles = _vehiclesContext.Vehicles;
             // Check if any vehicles were found.
             if (vehicles != null)
                 return Ok(vehicles);
@@ -40,57 +37,21 @@ namespace SensataApp.Controllers
 
 
         /**
-         * GET api/<VehiclesController>/latest
-         * Get the latest inputs of all vehicles.
-         */
-        [HttpGet("latest")]
-        public ActionResult<IEnumerable<LatestVehicleInput>> GetLatestVehicleInputs()
-        {
-            var latestVehicleInputs = _vehicleService.GetLatestVehicleInputs();
-            // Check if any vehicles were found.
-            if (latestVehicleInputs != null)
-                return Ok(latestVehicleInputs);
-            else
-                return NotFound("No vehicle data found.");
-        }
-
-
-        /**
-         * GET api/<VehiclesController>/{id}
-         * Get all inputs from the specified vehicle.
-         */
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<VehicleInputDTO>> GetVehicleInputs(string id)
-        {
-            var vehicleInputs = _vehicleService.GetVehicleInputs(id);
-            if (vehicleInputs != null)
-                return Ok(vehicleInputs);
-            return NotFound($"Vehicle with ID: {id} was not found.");
-        }
-
-        /**
-         * POST api/<VehiclesController>
+         * POST api/vehicles
          * Add a vehicle.
          */
         [HttpPost]
         public ActionResult AddVehicle([FromBody] VehicleDTO vehicleDTO)
         {
-            _vehicleService.AddVehicle(vehicleDTO);
+            // Create and add to the database a new vehicle with a newly generated ID.
+            Vehicle vehicle = new Vehicle
+            {
+                Name = vehicleDTO.Name
+            };
+            _vehiclesContext.Vehicles.Add(vehicle);
+            _vehiclesContext.SaveChanges();
+
             return Ok(vehicleDTO);
-        }
-
-
-        /**
-         * POST api/<VehiclesController>/id
-         * Add an instance of vehicle input.
-         */
-        [HttpPost("{id}")]
-        public ActionResult AddVehicleInput(string id, [FromBody] VehicleInputDTO input)
-        {
-            bool success = _vehicleService.AddVehicleInput(id, input);
-            if (success)
-                return Ok(input);
-            return NotFound($"Vehicle with ID: {id} not found.");
         }
     }
 }

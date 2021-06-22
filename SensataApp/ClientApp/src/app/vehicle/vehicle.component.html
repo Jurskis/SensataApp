@@ -1,20 +1,26 @@
-<h1 id="tableLabel" class="text-primary">Vehicle {{ vehicleName }} Inputs</h1>
+<div *ngIf="success">
+  <h1 id="tableLabel" class="text-primary">Vehicle {{ vehicleName }} Inputs</h1>
 
-<p *ngIf="!vehicleInputs"><em>Loading...</em></p>
+  <p *ngIf="!vehicleInputs"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="vehicleInputs">
-  <thead>
-    <tr>
-      <th>Latitude</th>
-      <th>Longitude</th>
-      <th>Speed</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let input of vehicleInputs">
-      <td>{{ input.latitude }}</td>
-      <td>{{ input.longitude }}</td>
-      <td>{{ input.speed }}</td>
-    </tr>
-  </tbody>
-</table>
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="vehicleInputs">
+    <thead>
+      <tr>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Speed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let input of vehicleInputs">
+        <td>{{ input.latitude }}</td>
+        <td>{{ input.longitude }}</td>
+        <td>{{ input.speed }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="!success">
+  <h1 class="text-primary">Page Not Found(404)</h1>
+</div>
+

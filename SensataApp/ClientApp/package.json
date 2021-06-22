@@ -28,6 +28,7 @@
     "core-js": "^3.8.3",
     "g": "^2.0.1",
     "jquery": "^3.5.1",
+    "ngx-pagination": "^5.1.1",
     "node-sass": "^5.0.0",
     "oidc-client": "^1.11.3",
     "popper.js": "^1.16.0",

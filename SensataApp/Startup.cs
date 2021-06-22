@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SensataApp.Models;
-using SensataApp.Services;
 using System.Linq;
 
 namespace SensataApp
@@ -25,8 +24,6 @@ namespace SensataApp
         {
             services.AddControllersWithViews();
 
-            services.AddScoped<IVehicleService, VehicleService>();
-
             services.AddDbContext<VehiclesContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("VehiclesContext")
@@ -42,8 +39,8 @@ namespace SensataApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, VehiclesContext vehiclesContext)
         {
-            // Create a database with dummy data if it doesn't exist.
             vehiclesContext.Database.Migrate();
+            // Create a database with dummy data if it doesn't exist.
             if (!vehiclesContext.Vehicles.Any())
             {
                 vehiclesContext.Vehicles.AddRange(

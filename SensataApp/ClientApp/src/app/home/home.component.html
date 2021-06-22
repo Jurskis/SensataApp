@@ -1,8 +1,8 @@
 <h1 class="text-primary">Vehicles</h1>
 
-<p *ngIf="!latestVehicleInputs"><em>Loading...</em></p>
+<p *ngIf="!inputs$"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="latestVehicleInputs">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="inputs$">
   <thead>
     <tr>
       <th></th>
@@ -13,7 +13,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let input of latestVehicleInputs">
+    <tr *ngFor="let input of inputs$ | async | paginate: { itemsPerPage: 5, currentPage: page }">
       <td><a [routerLink]="['/vehicle', input.vehicleId, { vehicleName: input.vehicleName }]" class="nav-link">Show All</a></td>
       <td>{{ input.vehicleName }}</td>
       <td>{{ input.latitude }}</td>
@@ -22,6 +22,7 @@
     </tr>
   </tbody>
 </table>
+<pagination-controls (pageChange)="page = $event"></pagination-controls>
 
 <button class="btn btn-primary float-right" (click)="open(content)">Add Vehicle</button>
 
@@ -35,9 +36,9 @@
   <div class="modal-body">
     <form #vehicleForm="ngForm" (ngSubmit)="addVehicle(vehicleForm.value)" novalidate>
       <div class="form-group">
-        <label for="vehicleName">Vehicle Name</label>
+        <label for="name">Vehicle Name</label>
         <div class="input-group">
-          <input name="vehicleName" class="form-control" placeholder="Name" type="text" ngModel required>
+          <input name="name" class="form-control" placeholder="Name" type="text" maxlength="15" ngModel required>
         </div>
       </div>
       <button data-dismiss="modal" class="btn btn-outline-primary" type="submit">Save</button>

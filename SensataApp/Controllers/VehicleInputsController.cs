@@ -1,38 +1,28 @@
-﻿using SensataApp.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
+using SensataApp.DTOs;
 using SensataApp.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 
-namespace SensataApp.Services
+namespace SensataApp.Controllers
 {
-    public interface IVehicleService 
-    {
-        IEnumerable<Vehicle> GetVehicles();
-
-        IEnumerable<LatestVehicleInput> GetLatestVehicleInputs();
-        IEnumerable<VehicleInputDTO> GetVehicleInputs(string id);
-        void AddVehicle(VehicleDTO vehicleDTO);
-        bool AddVehicleInput(string id, VehicleInputDTO input);
-    }
-
-    public class VehicleService : IVehicleService
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VehicleInputsController : ControllerBase
     {
         private VehiclesContext _vehiclesContext;
-        public VehicleService(VehiclesContext vehiclesContext)
+
+        public VehicleInputsController(VehiclesContext vehiclesContext)
         {
             _vehiclesContext = vehiclesContext;
         }
 
-
-        // Ši funkcija testavimui.
-        public IEnumerable<Vehicle> GetVehicles()
-        {
-            return _vehiclesContext.Vehicles;
-        }
-
-
-        public IEnumerable<LatestVehicleInput> GetLatestVehicleInputs()
+        /**
+         * GET api/vehicleinputs/latest
+         * Get the latest inputs of all vehicles.
+         */
+        [HttpGet("latest")]
+        public ActionResult<IEnumerable<LatestVehicleInput>> GetLatestVehicleInputs()
         {
             List<LatestVehicleInput> latestVehicleInputs = new List<LatestVehicleInput>();
             VehicleInput vehicleInput;
@@ -60,7 +50,8 @@ namespace SensataApp.Services
                 }
                 else
                 {
-                    latestVehicleInputs.Add(new LatestVehicleInput() { 
+                    latestVehicleInputs.Add(new LatestVehicleInput()
+                    {
                         VehicleId = vehicle.Id,
                         VehicleName = vehicle.Name,
                         Latitude = vehicleInput.Latitude,
@@ -70,11 +61,20 @@ namespace SensataApp.Services
                 }
             }
 
-            return latestVehicleInputs;
+            // Check if any vehicles were found.
+            if (latestVehicleInputs != null)
+                return Ok(latestVehicleInputs);
+            else
+                return NotFound("No vehicle data found.");
         }
 
-        
-        public IEnumerable<VehicleInputDTO> GetVehicleInputs(string id)
+
+        /**
+         * GET api/vehicleinputs/{id}
+         * Get all inputs from the specified vehicle.
+         */
+        [HttpGet("{id}")]
+        public ActionResult<IEnumerable<VehicleInputDTO>> GetVehicleInputs(string id)
         {
             List<VehicleInputDTO> vehicleInputDTOs = new List<VehicleInputDTO>();
 
@@ -82,6 +82,7 @@ namespace SensataApp.Services
             Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
             if (vehicle != null)
             {
+                // Get list of vehicle inputs, return empty list on database query error.
                 try
                 {
                     vehicleInputDTOs = _vehiclesContext.VehicleInputs
@@ -91,27 +92,21 @@ namespace SensataApp.Services
                 }
                 catch
                 {
-                    return new List<VehicleInputDTO>();
-                }        
+                    return Ok(new List<VehicleInputDTO>());
+                }
 
-                return vehicleInputDTOs;
+                return Ok(vehicleInputDTOs);
             }
-            return null;
+            return NotFound($"Vehicle with ID: {id} was not found.");
         }
 
 
-        public void AddVehicle(VehicleDTO vehicleDTO)
-        {
-            // Create and add to the database a new vehicle with a newly generated ID.
-            Vehicle vehicle = new Vehicle {
-                Name = vehicleDTO.Name
-            };
-            _vehiclesContext.Vehicles.Add(vehicle);
-            _vehiclesContext.SaveChanges();
-        }
-
-
-        public bool AddVehicleInput(string id, VehicleInputDTO input)
+        /**
+         * POST api/vehicleinputs/id
+         * Add an instance of vehicle input.
+         */
+        [HttpPost("{id}")]
+        public ActionResult AddVehicleInput(string id, [FromBody] VehicleInputDTO input)
         {
             // Check if vehicle with given ID exists.
             Vehicle vehicle = _vehiclesContext.Vehicles.Find(id);
@@ -127,10 +122,10 @@ namespace SensataApp.Services
                 };
                 _vehiclesContext.VehicleInputs.Add(vehicleInput);
                 _vehiclesContext.SaveChanges();
-                return true;
+                return Ok(input);
             }
-            
-            return false;
+
+            return NotFound($"Vehicle with ID: {id} not found.");
         }
     }
 }

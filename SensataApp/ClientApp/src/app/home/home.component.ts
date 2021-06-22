@@ -1,36 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { AppService } from '../app.service'
 import { VehicleInput } from '../vehicle-input';
 import { Vehicle } from '../vehicle';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   latestVehicleInputs: VehicleInput[];
   newVehicle: Vehicle;
+  inputs$: Observable<VehicleInput[]>;
+  vehicleAddSub: Subscription;
 
-  constructor(private appService: AppService, private modalService: NgbModal) {}
+  page: number = 1;
 
-  open(content) {
+  constructor(private appService: AppService, private modalService: NgbModal) { }
+
+  ngOnInit(): void {
+    this.inputs$ = this.appService.getLatestVehicleInputs();
+  }
+
+  ngOnDestroy(): void {
+    if (this.vehicleAddSub)
+      this.vehicleAddSub.unsubscribe();
+  }
+
+  open(content: TemplateRef<any>): void {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
-  addVehicle(data) {
-    console.log(data);
-    this.newVehicle = { name: data.vehicleName };
-    //this.newVehicle.name = data.vehicleName;
-    this.appService.addVehicle(this.newVehicle).subscribe((result) => {
-      this.ngOnInit(); // Reload
-    });
-    this.modalService.dismissAll(); // Dismiss all modals
-  }
+  addVehicle(vehicle: Vehicle): void {
+    // If there is a previuos subscription, unsubscribe from it.
+    if (this.vehicleAddSub)
+      this.vehicleAddSub.unsubscribe();
 
-  ngOnInit() {
-    this.appService.getLatestVehicleInputs().subscribe((result) => {
-      this.latestVehicleInputs = result;
+    this.vehicleAddSub = this.appService.addVehicle(vehicle).subscribe((response) => {
+      this.inputs$ = this.appService.getLatestVehicleInputs(); // Refresh data.
     });
+    
+    this.modalService.dismissAll(); // Dismiss all modals
   }
 }
