@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SensataApp.Hubs;
 using SensataApp.Models;
 using System.Linq;
 
@@ -23,11 +24,11 @@ namespace SensataApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
             services.AddDbContext<VehiclesContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("VehiclesContext")
                 ));
+            services.AddSignalR();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -83,6 +84,8 @@ namespace SensataApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<VehicleInputHub>("/vehicleinputs");
             });
 
             app.UseSpa(spa =>

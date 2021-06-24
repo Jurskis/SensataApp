@@ -12,13 +12,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let input of vehicleInputs">
+      <tr *ngFor="let input of vehicleInputs | paginate: { itemsPerPage: 5, currentPage: page }">
         <td>{{ input.latitude }}</td>
         <td>{{ input.longitude }}</td>
         <td>{{ input.speed }}</td>
       </tr>
     </tbody>
   </table>
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
 </div>
 <div *ngIf="!success">
   <h1 class="text-primary">Page Not Found(404)</h1>

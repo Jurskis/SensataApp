@@ -9,7 +9,7 @@ namespace SensataApp.Controllers
     [ApiController]
     public class VehiclesController : ControllerBase
     {
-        private VehiclesContext _vehiclesContext;
+        private readonly VehiclesContext _vehiclesContext;
 
         public VehiclesController(VehiclesContext vehiclesContext)
         {
@@ -27,6 +27,7 @@ namespace SensataApp.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Vehicle>> GetVehicles()
         {
+            
             var vehicles = _vehiclesContext.Vehicles;
             // Check if any vehicles were found.
             if (vehicles != null)

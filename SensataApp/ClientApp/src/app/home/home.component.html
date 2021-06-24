@@ -1,8 +1,8 @@
 <h1 class="text-primary">Vehicles</h1>
 
-<p *ngIf="!inputs$"><em>Loading...</em></p>
+<p *ngIf="!latestVehicleInputs"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="inputs$">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="latestVehicleInputs">
   <thead>
     <tr>
       <th></th>
@@ -13,7 +13,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let input of inputs$ | async | paginate: { itemsPerPage: 5, currentPage: page }">
+    <tr *ngFor="let input of latestVehicleInputs | paginate: { itemsPerPage: 5, currentPage: page }">
       <td><a [routerLink]="['/vehicle', input.vehicleId, { vehicleName: input.vehicleName }]" class="nav-link">Show All</a></td>
       <td>{{ input.vehicleName }}</td>
       <td>{{ input.latitude }}</td>

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SensataApp.DTOs;
+using SensataApp.Hubs;
 using SensataApp.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +12,13 @@ namespace SensataApp.Controllers
     [ApiController]
     public class VehicleInputsController : ControllerBase
     {
-        private VehiclesContext _vehiclesContext;
+        private readonly VehiclesContext _vehiclesContext;
+        private readonly IHubContext<VehicleInputHub> _vehiclesHubContext;
 
-        public VehicleInputsController(VehiclesContext vehiclesContext)
+        public VehicleInputsController(VehiclesContext vehiclesContext, IHubContext<VehicleInputHub> vehiclesHubContext)
         {
             _vehiclesContext = vehiclesContext;
+            _vehiclesHubContext = vehiclesHubContext;
         }
 
         /**
@@ -122,6 +126,9 @@ namespace SensataApp.Controllers
                 };
                 _vehiclesContext.VehicleInputs.Add(vehicleInput);
                 _vehiclesContext.SaveChanges();
+
+                _vehiclesHubContext.Clients.All.SendAsync("vehicleinputadded");
+
                 return Ok(input);
             }
 

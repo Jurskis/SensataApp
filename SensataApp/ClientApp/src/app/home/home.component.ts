@@ -3,42 +3,50 @@ import { AppService } from '../app.service'
 import { VehicleInput } from '../vehicle-input';
 import { Vehicle } from '../vehicle';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription, Observable } from 'rxjs';
+import { SignalRService } from '../signalr.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  //inputs$: Observable<VehicleInput[]>;
   latestVehicleInputs: VehicleInput[];
-  newVehicle: Vehicle;
-  inputs$: Observable<VehicleInput[]>;
-  vehicleAddSub: Subscription;
-
   page: number = 1;
 
-  constructor(private appService: AppService, private modalService: NgbModal) { }
+  constructor(private appService: AppService, private signalRService: SignalRService, private modalService: NgbModal) { }
+
+  getLatestVehicleInputs(): void {
+    this.appService.getLatestVehicleInputs()
+      .subscribe(
+        data => { this.latestVehicleInputs = data },
+        error => { console.error('Error occured while getting latest vehicle inputs. ' + error) }
+      );
+  }
 
   ngOnInit(): void {
-    this.inputs$ = this.appService.getLatestVehicleInputs();
+    //this.inputs$ = this.appService.getLatestVehicleInputs();
+
+    this.getLatestVehicleInputs();
+
+    this.signalRService.startConnection();
+    this.signalRService.hubConn.on('vehicleinputadded', () => {
+      this.getLatestVehicleInputs();
+    })
   }
 
   ngOnDestroy(): void {
-    if (this.vehicleAddSub)
-      this.vehicleAddSub.unsubscribe();
+    this.signalRService.closeConnection();
   }
 
+  // Opens "Vehicle Add" modal.
   open(content: TemplateRef<any>): void {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
   addVehicle(vehicle: Vehicle): void {
-    // If there is a previuos subscription, unsubscribe from it.
-    if (this.vehicleAddSub)
-      this.vehicleAddSub.unsubscribe();
-
-    this.vehicleAddSub = this.appService.addVehicle(vehicle).subscribe((response) => {
-      this.inputs$ = this.appService.getLatestVehicleInputs(); // Refresh data.
+    this.appService.addVehicle(vehicle).subscribe(() => {
+      this.getLatestVehicleInputs(); // Refresh data.
     });
     
     this.modalService.dismissAll(); // Dismiss all modals
