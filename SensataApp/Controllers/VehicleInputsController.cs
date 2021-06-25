@@ -91,6 +91,7 @@ namespace SensataApp.Controllers
                 {
                     vehicleInputDTOs = _vehiclesContext.VehicleInputs
                         .Where(vi => vi.VehicleId == id)
+                        .OrderBy(vi => vi.Created)
                         .Select(vi => new VehicleInputDTO { Latitude = vi.Latitude, Longitude = vi.Longitude, Speed = vi.Speed })
                         .DefaultIfEmpty().ToList();
                 }

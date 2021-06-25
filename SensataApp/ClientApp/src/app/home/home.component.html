@@ -2,29 +2,19 @@
 
 <p *ngIf="!latestVehicleInputs"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="latestVehicleInputs">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Latitude</th>
-      <th>Longitude</th>
-      <th>Speed</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let input of latestVehicleInputs | paginate: { itemsPerPage: 5, currentPage: page }">
-      <td><a [routerLink]="['/vehicle', input.vehicleId, { vehicleName: input.vehicleName }]" class="nav-link">Show All</a></td>
-      <td>{{ input.vehicleName }}</td>
-      <td>{{ input.latitude }}</td>
-      <td>{{ input.longitude }}</td>
-      <td>{{ input.speed }}</td>
-    </tr>
-  </tbody>
-</table>
-<pagination-controls (pageChange)="page = $event"></pagination-controls>
+<agm-map [latitude]="startingLat" [longitude]="startingLng" [zoom]="2">
+  <agm-marker *ngFor="let input of latestVehicleInputs" [latitude]="input.latitude" [longitude]="input.longitude" [title]="input.vehicleName">
+    <agm-info-window>
+      <p>Name: {{ input.vehicleName }}</p>
+      <p>Latitude: {{ input.latitude }}</p>
+      <p>Longitude: {{ input.longitude }}</p>
+      <p>Speed: {{ input.speed }}</p>
+      <a [routerLink]="['/vehicle', input.vehicleId, { vehicleName: input.vehicleName }]">Show All Inputs</a>
+    </agm-info-window>
+  </agm-marker>
+</agm-map>
 
-<button class="btn btn-primary float-right" (click)="open(content)">Add Vehicle</button>
+<button id="add-vehicle-btn" class="btn btn-primary float-right" (click)="open(content)">Add Vehicle</button>
 
 <ng-template #content let-modal>
   <div class="modal-header">

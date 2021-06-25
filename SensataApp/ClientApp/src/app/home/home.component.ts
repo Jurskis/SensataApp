@@ -8,11 +8,12 @@ import { SignalRService } from '../signalr.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  //inputs$: Observable<VehicleInput[]>;
   latestVehicleInputs: VehicleInput[];
-  page: number = 1;
+  startingLat: number = 24.0;
+  startingLng: number = 9.0;
 
   constructor(private appService: AppService, private signalRService: SignalRService, private modalService: NgbModal) { }
 
@@ -25,8 +26,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    //this.inputs$ = this.appService.getLatestVehicleInputs();
-
     this.getLatestVehicleInputs();
 
     this.signalRService.startConnection();
