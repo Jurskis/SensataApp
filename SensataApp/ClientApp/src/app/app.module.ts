@@ -29,10 +29,10 @@ import { VehicleComponent } from './vehicle/vehicle.component'
       apiKey: 'AIzaSyDwAb4YOZb8wUTAybb7c2K-nZa6um6_-1c'
     }),
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'vehicle/:vehicleId', component: VehicleComponent },
-      { path: '**', component: HomeComponent },
-    ])
+    { path: '', component: HomeComponent, pathMatch: 'full' },
+    { path: 'vehicle/:vehicleId', component: VehicleComponent },
+    { path: '**', component: HomeComponent },
+], { relativeLinkResolution: 'legacy' })
   ],
   providers: [],
   bootstrap: [AppComponent]
