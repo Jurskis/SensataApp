@@ -36,8 +36,8 @@ namespace SensataApp.Controllers
             foreach (Vehicle vehicle in _vehiclesContext.Vehicles)
             {
                 vehicleInput = _vehiclesContext.VehicleInputs
-                    .Where(vd => vd.VehicleId == vehicle.Id)
-                    .OrderByDescending(vd => vd.Created)
+                    .Where(_vehicleInput => _vehicleInput.VehicleId == vehicle.Id)
+                    .OrderByDescending(_vehicleInput => _vehicleInput.Created)
                     .FirstOrDefault();
 
                 // If vehicle doesn't have inputs then set default(empty) values.
@@ -90,9 +90,9 @@ namespace SensataApp.Controllers
                 try
                 {
                     vehicleInputDTOs = _vehiclesContext.VehicleInputs
-                        .Where(vi => vi.VehicleId == id)
-                        .OrderBy(vi => vi.Created)
-                        .Select(vi => new VehicleInputDTO { Latitude = vi.Latitude, Longitude = vi.Longitude, Speed = vi.Speed })
+                        .Where(_vehicleInput => _vehicleInput.VehicleId == id)
+                        .OrderBy(_vehicleInput => _vehicleInput.Created)
+                        .Select(_vehicleInput => new VehicleInputDTO { Latitude = _vehicleInput.Latitude, Longitude = _vehicleInput.Longitude, Speed = _vehicleInput.Speed })
                         .DefaultIfEmpty().ToList();
                 }
                 catch

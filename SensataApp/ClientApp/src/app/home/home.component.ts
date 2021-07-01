@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private appService: AppService, private signalRService: SignalRService, private modalService: NgbModal) { }
 
-  getLatestVehicleInputs(): void {
+  private getLatestVehicleInputs(): void {
     this.appService.getLatestVehicleInputs()
       .subscribe(
         data => { this.latestVehicleInputs = data },
