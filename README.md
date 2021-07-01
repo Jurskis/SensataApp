@@ -9,6 +9,7 @@ While the application is running, you can:
 1. Click the 'Add vehicle' button.
 2. Input a name for the new vehicle.
 3. Click 'Save'.
+
 The new vehicle does not have any inputs yet so it will not show up on the map until it receives an input. 
 
 
